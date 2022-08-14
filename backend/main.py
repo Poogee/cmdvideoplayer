@@ -1,16 +1,15 @@
-# This is a sample Python script.
-
-# Press ⌘R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+from flask import Flask
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import make_response
+from flask import request, flash
+import requests
+from flask_sqlalchemy import SQLAlchemy
+from data import database, mail, secretKey
+import re
+from flask import render_template
+from sqlalchemy.orm.attributes import flag_modified
+import json
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
+from flask_login import login_user, login_required, current_user, LoginManager, logout_user
+import base64
