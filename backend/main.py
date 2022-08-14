@@ -1,6 +1,5 @@
 from flask import Flask
 from flask import Flask, redirect, url_for, request
-from flask import jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import make_response
 from flask import request, flash
@@ -19,11 +18,14 @@ import base64
 app = Flask(__name__)
 
 
+    
+@app.route('/', methods=['GET', 'POST'])
+def handshake():
+    return "HellO!"
 
 @app.route('/', methods=['GET', 'POST'])
 def handshake():
-
-    return jsonify({"msg" : "test"})
+    return "H
 
 if __name__ == '__main__':
    app.run()

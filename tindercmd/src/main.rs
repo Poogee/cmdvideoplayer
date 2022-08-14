@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 
+
 extern crate image;
 use std::fs::File;
 use std::io::prelude::*;
@@ -59,23 +60,22 @@ fn read_image(path: &str) -> DynamicImage {
 
 fn main() {
     handshake();
-    let image = get_frame();
-    println!("{}", image_to_ascii( ,5))
+    let image = get_frame().unwrap();
+    println!("{}", image_to_ascii(image ,5))
 }
 #[tokio::main]
-
-
-async fn handshake() -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
+async fn handshake() -> Result<(), Box<dyn std::error::Error>> {
     let resp = reqwest::get("http://127.0.0.1:5000/")
         .await?
         .json::<HashMap<String, String>>()
         .await?;
     println!("{:#?}", resp);
-    Ok(resp)
+    Ok(())
 }
 
+#[tokio::main]
 async fn get_frame() -> Result<DynamicImage , Box<dyn std::error::Error>>{
-    let img_bytes = reqwest::get("http://127.0.0.1:5000/").await?.bytes().await?;
+    let img_bytes = reqwest::get("http://127.0.0.1:5000/gettestframe").await?.bytes().await?;
     let image = image::load_from_memory(&img_bytes)?;
     Ok(image)
 }
