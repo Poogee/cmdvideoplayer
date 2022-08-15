@@ -5,6 +5,7 @@ use ncurses::*;
 
 extern crate image;
 use std::fs::File;
+use rand::Rng;
 use std::io::prelude::*;
 use std::env;
 
@@ -114,7 +115,7 @@ fn main() {
   let mut args: Vec<String> = env::args().collect();
     remove_first(&mut args);
     if args.len() != 0 {
-        if(args[0] == "--classic"){
+        if args.contains(&"--classic".to_string()){
             wbkgd(stdscr(), COLOR_PAIR(1));
         }
     }
@@ -122,10 +123,51 @@ fn main() {
   //addstr("Hello, world!");
   getch();
   handshake();
-    let framecount = get_frame_count(0).unwrap();
+  let mut equal = 1;
+  let mut up = true;
+  let xcoord = 60;
+  let ycoord = 30;
+  //let videonumber = rand::thread_rng().gen_range(0..1);
+  let videonumber = 0;
+    let framecount = get_frame_count(videonumber).unwrap();
     for i in 1..framecount{
-        mvprintw(0,0,image_to_ascii(get_frame(0, i).unwrap(), 3).as_str());
-        refresh();
+        mvprintw(0,0,image_to_ascii(get_frame(videonumber, i).unwrap(), 3).as_str());
+        if equal == 1 {
+            mvprintw(ycoord,xcoord, "[Music]");
+            equal = equal + 1;
+            up = true;
+        } else if equal == 2 && up{
+            mvprintw(ycoord,xcoord, "[mUsic]");
+            equal = equal + 1;
+        } else if equal == 3 && up {
+            mvprintw(ycoord,xcoord, "[muSic]");
+            equal = equal + 1;
+        } else if equal == 4 && up {
+            mvprintw(ycoord,xcoord, "[musIc]");
+            equal = equal + 1; 
+        } else if equal == 5 && up {
+            mvprintw(ycoord,xcoord, "[musiC]");
+            equal = equal - 1; 
+            up = false; 
+        }else if equal == 2 && !up{
+            mvprintw(ycoord,xcoord, "[mUsic]");
+            equal = equal - 1;
+        } else if equal == 3 && !up {
+            mvprintw(ycoord,xcoord, "[muSic]");
+            equal = equal - 1;
+        } else if equal == 4 && !up {
+            mvprintw(ycoord,xcoord, "[musIc]");
+            equal = equal - 1; 
+        }
+        // match equal{
+        //     1 => mvprintw(0,20, "Музон"),
+        //     2 => mvprintw(0,20, "мУзон"),
+        //     3 => mvprintw(0,20, "муЗон"),
+        //     4 => mvprintw(0,20, "музОн"),
+        //     5 => mvprintw(0,20, "музоН"),
+        //     _ => panic!()
+        // };
+         refresh();
 
         let ten_millis = time::Duration::from_millis(100);
         thread::sleep(ten_millis);

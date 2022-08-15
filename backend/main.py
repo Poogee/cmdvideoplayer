@@ -23,7 +23,7 @@ app = Flask(__name__)
 
 
 videoframes = {}
-videos = ["papichnuts.mp4"]
+videos = ["papichnuts.mp4","dum.mp4"]
 curframeno = 0
 
 def frames(videono):
@@ -33,7 +33,10 @@ def frames(videono):
     success, image = vidcap.read()
     count = 0
     while curframeno != count:
-        cv2.imwrite("frame%d.jpg" % count, image)# save frame as JPEG file
+        scale_down = 0.6
+        scaled_f_down = cv2.resize(image, None, fx=scale_down, fy=scale_down, interpolation=cv2.INTER_LINEAR)
+       # img = cv2.resize(image,(160,90), interpolation= cv2.INTER_LINEAR)
+        cv2.imwrite("frame%d.jpg" % count, scaled_f_down)# save frame as JPEG file
         success, image = vidcap.read()
         print('Read a new frame: ', success)
         count += 1
