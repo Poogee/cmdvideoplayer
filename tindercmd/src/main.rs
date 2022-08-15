@@ -109,11 +109,11 @@ fn main() {
     //let videonumber = rand::thread_rng().gen_range(0..1);
     while playing {
         let mut equal = 1;
-        let videonumber = 0;
+        let videonumber = 1;
         let mut up = true;
         let framecount = get_frame_count(videonumber).unwrap();
       for i in 1..framecount{
-          mvprintw(0,0,image_to_ascii(get_frame(videonumber, i).unwrap(), 3).as_str());
+          mvprintw(0,0,image_to_ascii(get_frame(videonumber, i).unwrap(), 6).as_str());
           mvprintw(ycoord-2,xcoord+2, "Subtitles:");
           //mvprintw(ycoord,xcoord-2, "Ne nado. Dyadya ne nado. Da kak eto kontrit'?");
           //mvprintw(ycoord-1,xcoord, "Ne nado dyadya. Neeeet");
