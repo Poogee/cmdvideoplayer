@@ -1,6 +1,7 @@
 use std::collections::HashMap;
-
-
+use std::{thread, time};
+extern crate ncurses;
+use ncurses::*;
 
 extern crate image;
 use std::fs::File;
@@ -8,10 +9,17 @@ use std::io::prelude::*;
 use std::env;
 
 
+
 use crate::image::GenericImageView;
 use image::DynamicImage;
 use image::imageops::FilterType;
 
+fn remove_first<T>(vec: &mut Vec<T>) -> Option<T> {
+    if vec.is_empty() {
+        return None;
+    }
+    Some(vec.remove(0))
+}
 
 fn write_file(art: &str) {
 
@@ -26,7 +34,6 @@ fn image_to_ascii(image: DynamicImage, resolution: u32) -> String{
     let mut y = 0;
     let mut art = String::new();
     let small_img = image.resize(image.width() / resolution, image.height() / resolution, FilterType::Nearest);
-    println!("Transforming image");
     for p in small_img.pixels() {
         if y != p.1 {
             art.push_str("\n");
@@ -59,12 +66,80 @@ fn read_image(path: &str) -> DynamicImage {
 
 
 fn main() {
-    handshake();
+    let mut args: Vec<String> = env::args().collect();
+    remove_first(&mut args);
+    if 
+    // handshake();
+    // let framecount = get_frame_count(0).unwrap();
+    // for i in 1..framecount{
+    //     println!("{}", image_to_ascii(get_frame(0, i).unwrap(), 3));
+    //     let ten_millis = time::Duration::from_millis(100);
+    //     thread::sleep(ten_millis);
+    // }
+      /* If your locale env is unicode, you should use `setlocale`. */
+  // let locale_conf = LcCategory::all;
+  // setlocale(locale_conf, "zh_CN.UTF-8"); // if your locale is like mine(zh_CN.UTF-8)
+
+  /* Start ncurses. */
+  initscr();
+  start_color();
+  raw();
+
+  /* Allow for extended keyboard (like F1). */
+  /*keypad(stdscr(), true);
+  noecho();
+
+  /* Prompt for a character. */
+  addstr("Enter a character: ");
+
+  /* Wait for input. */
+  let ch = getch();
+  if ch == KEY_F(1)
+  {
+    /* Enable attributes and output message. */
+    attron(A_BOLD | A_BLINK);
+    addstr("\nF1");
+    attroff(A_BOLD | A_BLINK);
+    addstr(" pressed");
+  }
+  else
+  {
+    /* Enable attributes and output message. */
+    addstr("\nKey pressed: ");
+    attron(A_BOLD | A_BLINK);
+    addstr(format!("{}\n", char::from_u32(ch as u32).expect("Invalid char")).as_ref());
+    attroff(A_BOLD | A_BLINK);
+  }*/
+
+  /* Refresh, showing the previous message. */
+  refresh();
+  init_pair(1,COLOR_WHITE, COLOR_BLUE);
+  
+  wbkgd(stdscr(), COLOR_PAIR(1));
+  /* Print to the back buffer. */
+  //addstr("Hello, world!");
+  getch();
+  handshake();
     let framecount = get_frame_count(0).unwrap();
     for i in 1..framecount{
-        while True{
-        println!("{}", image_to_ascii(get_frame(0, i).unwrap(), 3));
+        mvprintw(0,0,image_to_ascii(get_frame(0, i).unwrap(), 3).as_str());
+        refresh();
+
+        let ten_millis = time::Duration::from_millis(100);
+        thread::sleep(ten_millis);
     }
+
+
+  /* Print some unicode(Chinese) string. */
+  // addstr("Great Firewall dislike VPN protocol.\nGFW 不喜欢 VPN 协议。");
+
+  /* Update the screen. */
+
+  /* Wait for a key press. */
+  getch();
+
+  /* Terminate ncurses. */
+  endwin();
 }
 #[tokio::main]
 async fn handshake() -> Result<(), Box<dyn std::error::Error>> {
