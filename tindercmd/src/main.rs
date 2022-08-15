@@ -9,7 +9,7 @@ use rand::Rng;
 use std::io::prelude::*;
 use std::env;
 
-
+use std::char;
 
 use crate::image::GenericImageView;
 use image::DynamicImage;
@@ -81,8 +81,121 @@ fn main() {
   /* Start ncurses. */
   initscr();
   start_color();
+  init_pair(1,COLOR_WHITE, COLOR_BLUE);
+  let mut args: Vec<String> = env::args().collect();
+    remove_first(&mut args);
+    if args.len() != 0 {
+        if args.contains(&"--classic".to_string()){
+            wbkgd(stdscr(), COLOR_PAIR(1));
+        }
+    }
   raw();
 
+  /* Allow for extended keyboard (like F1). */
+  keypad(stdscr(), true);
+  noecho();
+
+  /* Prompt for a character. */
+  addstr("Do you want to watch a video ? [Y/n]");
+
+  /* Wait for input. */
+  let ch = getch();
+  let normch =  char::from_u32(ch as u32).expect("Invalid char");
+  let playing = true;
+  if normch == 'y'
+  {
+    let xcoord = 60+20+20;
+    let ycoord = 20;
+    //let videonumber = rand::thread_rng().gen_range(0..1);
+    while playing {
+        let mut equal = 1;
+        let videonumber = 0;
+        let mut up = true;
+        let framecount = get_frame_count(videonumber).unwrap();
+      for i in 1..framecount{
+          mvprintw(0,0,image_to_ascii(get_frame(videonumber, i).unwrap(), 3).as_str());
+          mvprintw(ycoord-2,xcoord+2, "Subtitles:");
+          //mvprintw(ycoord,xcoord-2, "Ne nado. Dyadya ne nado. Da kak eto kontrit'?");
+          //mvprintw(ycoord-1,xcoord, "Ne nado dyadya. Neeeet");
+          if equal == 1 {
+              mvprintw(ycoord,xcoord, "[Music]");
+              equal = equal + 1;
+              up = true;
+          } else if equal == 2 && up{
+              mvprintw(ycoord,xcoord, "[mUsic]");
+              equal = equal + 1;
+          } else if equal == 3 && up {
+              mvprintw(ycoord,xcoord, "[muSic]");
+              equal = equal + 1;
+          } else if equal == 4 && up {
+              mvprintw(ycoord,xcoord, "[musIc]");
+              equal = equal + 1; 
+          } else if equal == 5 && up {
+              mvprintw(ycoord,xcoord, "[musiC]");
+              equal = equal - 1; 
+              up = false; 
+          }else if equal == 2 && !up{
+              mvprintw(ycoord,xcoord, "[mUsic]");
+              equal = equal - 1;
+          } else if equal == 3 && !up {
+              mvprintw(ycoord,xcoord, "[muSic]");
+              equal = equal - 1;
+          } else if equal == 4 && !up {
+              mvprintw(ycoord,xcoord, "[musIc]");
+              equal = equal - 1; 
+          }
+
+          // match equal{
+          //     1 => mvprintw(0,20, "Музон"),
+          //     2 => mvprintw(0,20, "мУзон"),
+          //     3 => mvprintw(0,20, "муЗон"),
+          //     4 => mvprintw(0,20, "музОн"),
+          //     5 => mvprintw(0,20, "музоН"),
+          //     _ => panic!()
+          // };
+           refresh();
+  
+          let ten_millis = time::Duration::from_millis(110);
+          thread::sleep(ten_millis);
+      }
+      addstr("\nDo you want to watch the same video again [y/N]");
+      refresh();
+      let normresp = ' ';
+        let mut resp = getch();
+        let mut normresp = char::from_u32(resp as u32).expect("Invalid char");
+        if normresp == 'ƚ'{
+            resp = getch();
+            normresp = char::from_u32(resp as u32).expect("Invalid char"); 
+        }
+        //dbg!(normresp);
+      if normresp == 'n'{
+        refresh();
+        addstr("\nDo you want to watch the next video? [y/N]");
+        let mut resp2 = getch();
+        let mut normresp2 = char::from_u32(resp2 as u32).expect("Invalid char");
+        if normresp2 == 'ƚ' {
+            resp2 = getch();
+            normresp2 = char::from_u32(resp2 as u32).expect("Invalid char");
+        }
+        //dbg!(normresp2);
+        refresh();
+        if normresp2 == 'n'{
+            endwin();
+        } else if normresp2 == 'y' {
+            refresh();
+            let videonumber = 1;//rand::thread_rng().gen_range(0..1);
+            refresh();
+            continue
+        }
+      } else if normresp == 'y' {
+        continue  
+      }
+    }
+  }
+  else
+  {
+    endwin();
+  }
   /* Allow for extended keyboard (like F1). */
   /*keypad(stdscr(), true);
   noecho();
@@ -111,67 +224,10 @@ fn main() {
 
   /* Refresh, showing the previous message. */
   refresh();
-  init_pair(1,COLOR_WHITE, COLOR_BLUE);
-  let mut args: Vec<String> = env::args().collect();
-    remove_first(&mut args);
-    if args.len() != 0 {
-        if args.contains(&"--classic".to_string()){
-            wbkgd(stdscr(), COLOR_PAIR(1));
-        }
-    }
   /* Print to the back buffer. */
   //addstr("Hello, world!");
   getch();
   handshake();
-  let mut equal = 1;
-  let mut up = true;
-  let xcoord = 60;
-  let ycoord = 30;
-  //let videonumber = rand::thread_rng().gen_range(0..1);
-  let videonumber = 0;
-    let framecount = get_frame_count(videonumber).unwrap();
-    for i in 1..framecount{
-        mvprintw(0,0,image_to_ascii(get_frame(videonumber, i).unwrap(), 3).as_str());
-        if equal == 1 {
-            mvprintw(ycoord,xcoord, "[Music]");
-            equal = equal + 1;
-            up = true;
-        } else if equal == 2 && up{
-            mvprintw(ycoord,xcoord, "[mUsic]");
-            equal = equal + 1;
-        } else if equal == 3 && up {
-            mvprintw(ycoord,xcoord, "[muSic]");
-            equal = equal + 1;
-        } else if equal == 4 && up {
-            mvprintw(ycoord,xcoord, "[musIc]");
-            equal = equal + 1; 
-        } else if equal == 5 && up {
-            mvprintw(ycoord,xcoord, "[musiC]");
-            equal = equal - 1; 
-            up = false; 
-        }else if equal == 2 && !up{
-            mvprintw(ycoord,xcoord, "[mUsic]");
-            equal = equal - 1;
-        } else if equal == 3 && !up {
-            mvprintw(ycoord,xcoord, "[muSic]");
-            equal = equal - 1;
-        } else if equal == 4 && !up {
-            mvprintw(ycoord,xcoord, "[musIc]");
-            equal = equal - 1; 
-        }
-        // match equal{
-        //     1 => mvprintw(0,20, "Музон"),
-        //     2 => mvprintw(0,20, "мУзон"),
-        //     3 => mvprintw(0,20, "муЗон"),
-        //     4 => mvprintw(0,20, "музОн"),
-        //     5 => mvprintw(0,20, "музоН"),
-        //     _ => panic!()
-        // };
-         refresh();
-
-        let ten_millis = time::Duration::from_millis(100);
-        thread::sleep(ten_millis);
-    }
 
 
   /* Print some unicode(Chinese) string. */

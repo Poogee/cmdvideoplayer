@@ -23,7 +23,7 @@ app = Flask(__name__)
 
 
 videoframes = {}
-videos = ["papichnuts.mp4","dum.mp4"]
+videos = ["papanya.mp4","dum.mp4","nenado.mp4"]
 curframeno = 0
 
 def frames(videono):
