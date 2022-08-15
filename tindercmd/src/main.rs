@@ -60,8 +60,11 @@ fn read_image(path: &str) -> DynamicImage {
 
 fn main() {
     handshake();
-    let image = get_frame().unwrap();
-    println!("{}", image_to_ascii(image ,5))
+    let framecount = get_frame_count(0).unwrap();
+    for i in 1..framecount{
+        while True{
+        println!("{}", image_to_ascii(get_frame(0, i).unwrap(), 3));
+    }
 }
 #[tokio::main]
 async fn handshake() -> Result<(), Box<dyn std::error::Error>> {
@@ -74,8 +77,32 @@ async fn handshake() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[tokio::main]
-async fn get_frame() -> Result<DynamicImage , Box<dyn std::error::Error>>{
-    let img_bytes = reqwest::get("http://127.0.0.1:5000/gettestframe").await?.bytes().await?;
-    let image = image::load_from_memory(&img_bytes)?;
+async fn get_frame_count(videono : u32) -> Result<u32 , Box<dyn std::error::Error>>{
+    let mut x = HashMap::new();
+    x.insert("videono".to_string(), videono);
+    let client = reqwest::Client::new();
+    let res = client.post("http://127.0.0.1:5000/getframecount").json(&x)
+    .send()
+    .await?.json::<HashMap<String, u32>>().await?;
+    Ok(*res.get("framecount").unwrap())
+    // let resp = reqwest::get("http://127.0.0.1:5000/")
+    //     .await?
+    //     .json::<HashMap<String, u32>>()
+    //     .await?;
+    // println!("{:#?}", resp);
+    // Ok(())
+}
+
+#[tokio::main]
+async fn get_frame(videono: u32, frameno: u32) -> Result<DynamicImage , Box<dyn std::error::Error>>{
+    let mut x = HashMap::new();
+    let client = reqwest::Client::new();
+    x.insert("videono".to_string(), videono);
+    x.insert("frameno".to_string(), frameno );
+    //let img_bytes = reqwest::get("http://127.0.0.1:5000/getframe").await?.bytes().await?;
+    let res = client.post("http://127.0.0.1:5000/getframe").json(&x)
+    .send()
+    .await?.bytes().await?;
+    let image = image::load_from_memory(&res)?;
     Ok(image)
 }
