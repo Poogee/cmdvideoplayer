@@ -66,9 +66,6 @@ fn read_image(path: &str) -> DynamicImage {
 
 
 fn main() {
-    let mut args: Vec<String> = env::args().collect();
-    remove_first(&mut args);
-    if 
     // handshake();
     // let framecount = get_frame_count(0).unwrap();
     // for i in 1..framecount{
@@ -114,8 +111,13 @@ fn main() {
   /* Refresh, showing the previous message. */
   refresh();
   init_pair(1,COLOR_WHITE, COLOR_BLUE);
-  
-  wbkgd(stdscr(), COLOR_PAIR(1));
+  let mut args: Vec<String> = env::args().collect();
+    remove_first(&mut args);
+    if args.len() != 0 {
+        if(args[0] == "--classic"){
+            wbkgd(stdscr(), COLOR_PAIR(1));
+        }
+    }
   /* Print to the back buffer. */
   //addstr("Hello, world!");
   getch();
