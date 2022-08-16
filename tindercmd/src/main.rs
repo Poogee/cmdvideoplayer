@@ -104,17 +104,17 @@ fn main() {
   let playing = true;
   if normch == 'y'
   {
-    let xcoord = 60+20+20;
+    let xcoord = 60;
     let ycoord = 20;
     //let videonumber = rand::thread_rng().gen_range(0..1);
     while playing {
         let mut equal = 1;
-        let videonumber = 1;
+        let videonumber = 0;
         let mut up = true;
         let framecount = get_frame_count(videonumber).unwrap();
       for i in 1..framecount{
-          mvprintw(0,0,image_to_ascii(get_frame(videonumber, i).unwrap(), 6).as_str());
-          mvprintw(ycoord-2,xcoord+2, "Subtitles:");
+          mvprintw(0,0,image_to_ascii(get_frame(videonumber, i).unwrap(),2).as_str());
+          mvprintw(ycoord-2,xcoord+5, "Subtitles:");
           //mvprintw(ycoord,xcoord-2, "Ne nado. Dyadya ne nado. Da kak eto kontrit'?");
           //mvprintw(ycoord-1,xcoord, "Ne nado dyadya. Neeeet");
           if equal == 1 {
@@ -144,15 +144,6 @@ fn main() {
               mvprintw(ycoord,xcoord, "[musIc]");
               equal = equal - 1; 
           }
-
-          // match equal{
-          //     1 => mvprintw(0,20, "Музон"),
-          //     2 => mvprintw(0,20, "мУзон"),
-          //     3 => mvprintw(0,20, "муЗон"),
-          //     4 => mvprintw(0,20, "музОн"),
-          //     5 => mvprintw(0,20, "музоН"),
-          //     _ => panic!()
-          // };
            refresh();
   
           let ten_millis = time::Duration::from_millis(110);
@@ -196,46 +187,7 @@ fn main() {
   {
     endwin();
   }
-  /* Allow for extended keyboard (like F1). */
-  /*keypad(stdscr(), true);
-  noecho();
 
-  /* Prompt for a character. */
-  addstr("Enter a character: ");
-
-  /* Wait for input. */
-  let ch = getch();
-  if ch == KEY_F(1)
-  {
-    /* Enable attributes and output message. */
-    attron(A_BOLD | A_BLINK);
-    addstr("\nF1");
-    attroff(A_BOLD | A_BLINK);
-    addstr(" pressed");
-  }
-  else
-  {
-    /* Enable attributes and output message. */
-    addstr("\nKey pressed: ");
-    attron(A_BOLD | A_BLINK);
-    addstr(format!("{}\n", char::from_u32(ch as u32).expect("Invalid char")).as_ref());
-    attroff(A_BOLD | A_BLINK);
-  }*/
-
-  /* Refresh, showing the previous message. */
-  refresh();
-  /* Print to the back buffer. */
-  //addstr("Hello, world!");
-  getch();
-  handshake();
-
-
-  /* Print some unicode(Chinese) string. */
-  // addstr("Great Firewall dislike VPN protocol.\nGFW 不喜欢 VPN 协议。");
-
-  /* Update the screen. */
-
-  /* Wait for a key press. */
   getch();
 
   /* Terminate ncurses. */
