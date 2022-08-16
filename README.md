@@ -1,1 +1,1 @@
-# tindercmd
+# cmdvideoplayer
